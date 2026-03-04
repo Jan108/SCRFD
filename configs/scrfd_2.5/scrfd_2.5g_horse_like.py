@@ -1,11 +1,11 @@
 lr_mult = 8
-optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0005)
+optimizer = dict(type='SGD', lr=0.0001, momentum=0.9, weight_decay=0.0005)
 optimizer_config = dict(grad_clip=None)
 lr_config = dict(
     policy='step',
     warmup='linear',
-    warmup_iters=1500,
-    warmup_ratio=0.001,
+    warmup_iters=1000,
+    warmup_ratio=0.01,
     step=[55*lr_mult, 68*lr_mult])
 total_epochs = 80*lr_mult
 checkpoint_config = dict(interval=total_epochs)
