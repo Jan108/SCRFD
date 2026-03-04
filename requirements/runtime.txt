@@ -4,4 +4,3 @@ numpy
 six
 terminaltables
 tqdm
-autotorch

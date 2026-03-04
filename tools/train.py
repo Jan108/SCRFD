@@ -154,6 +154,10 @@ def main():
     model = build_detector(
         cfg.model, train_cfg=cfg.train_cfg, test_cfg=cfg.test_cfg)
 
+    if cfg.load_from:
+        from mmcv.runner import load_checkpoint
+        checkpoint = load_checkpoint(model, cfg.load_from, map_location='cuda')
+
     datasets = [build_dataset(cfg.data.train)]
     #print('ds count', len(datasets))
     if len(cfg.workflow) == 2:
