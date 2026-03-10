@@ -1,6 +1,6 @@
 optimizer = dict(type='SGD', lr=0.0001, momentum=0.9, weight_decay=0.0005)
 optimizer_config = dict(grad_clip=None)
-lr_mult = 8
+lr_mult = 2
 lr_config = dict(
     policy='step',
     warmup='linear',
