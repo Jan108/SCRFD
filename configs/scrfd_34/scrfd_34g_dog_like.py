@@ -12,13 +12,13 @@ checkpoint_config = dict(interval=80)
 log_config = dict(interval=100, hooks=[dict(type='TextLoggerHook')])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-load_from = '/mnt/data/afarec/code/face_detection/SCRFD/weights/model_pretrained_34GF.pth'
+load_from = '/u/jb64vyso/afarec/code/face_detection/SCRFD/weights/model_pretrained_34GF.pth'
 resume_from = None
 workflow = [('train', 1)]
 dataset_type = 'RetinaFaceDataset'
-data_root = '/mnt/data/afarec/data/OAFI_full'
-train_root = '/mnt/data/afarec/data/OAFI_full/images/train'
-val_root = '/mnt/data/afarec/data/OAFI_full/images/val'
+data_root = '/u/jb64vyso/afarec/data/OAFI_full'
+train_root = data_root+'/images/train'
+val_root = data_root+'/images/val'
 img_norm_cfg = dict(
     mean=[127.5, 127.5, 127.5], std=[128.0, 128.0, 128.0], to_rgb=True)
 train_pipeline = [
@@ -72,8 +72,8 @@ data = dict(
     workers_per_gpu=2,
     train=dict(
         type='RetinaFaceDataset',
-        ann_file='/mnt/data/afarec/data/OAFI_full/labels_yunet/labels_dog_like_train.txt',
-        img_prefix='/mnt/data/afarec/data/OAFI_full/images/train/',
+        ann_file=data_root+'/labels_yunet/labels_dog_like_train.txt',
+        img_prefix=data_root+'/images/train/',
         pipeline=[
             dict(type='LoadImageFromFile', to_float32=True),
             dict(type='LoadAnnotations', with_bbox=True, with_keypoints=True),
@@ -110,8 +110,8 @@ data = dict(
         ]),
     val=dict(
         type='RetinaFaceDataset',
-        ann_file='/mnt/data/afarec/data/OAFI_full/labels_yunet/labels_dog_like_validation.txt',
-        img_prefix='/mnt/data/afarec/data/OAFI_full/images/val/',
+        ann_file=data_root+'/labels_yunet/labels_dog_like_validation.txt',
+        img_prefix=data_root+'/images/val/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
@@ -133,8 +133,8 @@ data = dict(
         ]),
     test=dict(
         type='RetinaFaceDataset',
-        ann_file='/mnt/data/afarec/data/OAFI_full/labels_yunet/labels_dog_like_test.txt',
-        img_prefix='/mnt/data/afarec/data/OAFI_full/images/test/',
+        ann_file=data_root+'/labels_yunet/labels_dog_like_test.txt',
+        img_prefix=data_root+'/images/test/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
