@@ -1,19 +1,20 @@
-# Fine-Tune YuNet on OpenAnimalFaceImages
+# Fine-Tune SCRFD on OpenAnimalFaceImages
 
-This repository is used in the [AFaRec System](https://github.com/Jan108/AFaRec) to train and predict YuNet.
+This repository is used in the [AFaRec System](https://github.com/Jan108/AFaRec) to train and predict SCRFD.
 
 ## Reproduction Quicksteps
 Use Python 3.8:
 1. Run ```pip install torch==1.8.2 torchvision==0.9.2 torchaudio==0.8.2 --extra-index-url https://download.pytorch.org/whl/lts/1.8/cu111```
 2. Run ```pip install mmcv-full==1.3.17 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.8.0/index.html```
-4. Run ```pip install Cython==0.29.33```
-5. Run ```pip install mmpycocotools```
-6. Run ```pip install yapf==0.30.0```
-6. 3. Run ```python setup.py develop```
+3. Run ```pip install Cython==0.29.33```
+4. Run ```pip install mmpycocotools```
+5. Run ```pip install yapf==0.30.0```
+6. Run ```python setup.py develop```
 7. Run ```pip install -r requirements.txt```
 8. Prepare data: Use [AFaRec datasetup OAFI](https://github.com/Jan108/AFaRec/blob/main/data/oafi.py#L83)/
-9. Alter the Path in [train_predict_yunet.sh](train_predict_yunet.sh)
-10. Train: ```bash train_predict_yunet.sh```
+9. Alter the Path in [train_predict_scrfd.sh](train_predict_scrfd.sh)
+10. Download weights into [weights](weights): [model_pretrained_2.5GF.pth](weights/model_pretrained_2.5GF.pth), [model_pretrained_10GF.pth](weights/model_pretrained_10GF.pth), [model_pretrained_34GF.pth](weights/model_pretrained_34GF.pth)
+11. Train: ```bash train_predict_scrfd.sh```
 
 
 Below is the old README.
