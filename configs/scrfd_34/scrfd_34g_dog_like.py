@@ -12,11 +12,11 @@ checkpoint_config = dict(interval=80)
 log_config = dict(interval=100, hooks=[dict(type='TextLoggerHook')])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-load_from = '/u/jb64vyso/afarec/code/face_detection/SCRFD/weights/model_pretrained_34GF.pth'
+load_from = '/mnt/data/afarec/code/face_detection/SCRFD/weights/model_pretrained_34GF.pth'
 resume_from = None
 workflow = [('train', 1)]
 dataset_type = 'RetinaFaceDataset'
-data_root = '/u/jb64vyso/afarec/data/OAFI_full'
+data_root = '/mnt/data/afarec/data/OAFI_full'
 train_root = data_root+'/images/train'
 val_root = data_root+'/images/val'
 img_norm_cfg = dict(

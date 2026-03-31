@@ -19,6 +19,14 @@ for scrfd_type in "2.5" "10" "34"; do
       --mode 2 \
       --save-preds \
       --out "${ROOT_DIR}work_dir/scrfd_${scrfd_type}_${cls}/"
+
+    PYTHONPATH=$ROOT_DIR:$PYTHONPATH \
+    python "${ROOT_DIR}tools/test_widerface.py" \
+      "${ROOT_DIR}configs/scrfd_${scrfd_type}/scrfd_${scrfd_type}g_${cls}.py" \
+      "${ROOT_DIR}work_dir/scrfd_${scrfd_type}_${cls}/latest.pth" \
+      --mode 2 \
+      --out "${ROOT_DIR}work_dir/scrfd_${scrfd_type}_${cls}/" \
+      --latency_test 1000
   done
 
   PYTHONPATH=$ROOT_DIR:$PYTHONPATH \
@@ -28,4 +36,12 @@ for scrfd_type in "2.5" "10" "34"; do
     --mode 2 \
     --save-preds \
     --out "${ROOT_DIR}work_dir/scrfd_${scrfd_type}_pretrained/"
+
+  PYTHONPATH=$ROOT_DIR:$PYTHONPATH \
+  python "${ROOT_DIR}tools/test_widerface.py" \
+    "${ROOT_DIR}configs/scrfd_${scrfd_type}/scrfd_${scrfd_type}g_all.py" \
+    "${ROOT_DIR}weights/model_pretrained_${scrfd_type}GF.pth" \
+    --mode 2 \
+    --out "${ROOT_DIR}work_dir/scrfd_${scrfd_type}_pretrained/" \
+    --latency_test 1000
 done

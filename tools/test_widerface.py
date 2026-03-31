@@ -1,5 +1,7 @@
 import argparse
+import datetime
 import os
+from itertools import islice, cycle
 
 import mmcv
 import torch
@@ -41,6 +43,7 @@ def parse_args():
         help='score threshold')
     parser.add_argument('--local_rank', type=int, default=0)
     parser.add_argument('--mode', type=int, default=0)
+    parser.add_argument("--latency_test", type=int, help="Amount of images for the latency test")
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
@@ -129,29 +132,50 @@ def main():
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     dataset = data_loader.dataset
-    prog_bar = mmcv.ProgressBar(len(dataset))
-    for i, data in enumerate(data_loader):
-        with torch.no_grad():
-            result = model(return_loss=False, rescale=True, **data)
-        assert len(result) == 1
-        batch_size = 1
-        result = result[0][0]
-        img_metas = data['img_metas'][0].data[0][0]
-        filepath = img_metas['ori_filename']
-
-        if args.save_preds:
-            out_dir = os.path.join(output_folder, 'results')
-            if not os.path.exists(out_dir):
-                os.makedirs(out_dir)
-            out_file = os.path.join(out_dir, filepath.replace('jpg', 'txt'))
-            boxes = result
-            with open(out_file, 'w') as f:
-                for b in range(boxes.shape[0]):
-                    box = boxes[b]
-                    f.write("%.5f %.5f %.5f %.5f %g\n"%(box[0], box[1], box[2]-box[0], box[3]-box[1], box[4]))
-
-        for _ in range(batch_size):
+    if args.latency_test is not None:
+        latency_amount = args.latency_test
+        prog_bar = mmcv.ProgressBar(latency_amount+300)
+        inf_times = []
+        prewarm = 0
+        for i, data in islice(cycle(enumerate(data_loader)), latency_amount+300):
+            with torch.no_grad():
+                start_time = datetime.datetime.now()
+                result = model(return_loss=False, rescale=True, **data)
+                end_time = datetime.datetime.now()
+                inf_times.append(end_time - start_time)
+                prewarm += 1
+                if prewarm > 300:
+                    inf_times.append(end_time - start_time)
+            assert len(result) == 1
             prog_bar.update()
+        avg_time = sum(inf_times, start=datetime.timedelta()) / len(inf_times)
+        print(f'Inference for {args.checkpoint} took: {avg_time}')
+        with open(os.path.join(output_folder, 'timing.txt'), 'w') as file:
+            file.write(str(avg_time) + '\n')
+    else:
+        prog_bar = mmcv.ProgressBar(len(dataset))
+        for i, data in enumerate(data_loader):
+            with torch.no_grad():
+                result = model(return_loss=False, rescale=True, **data)
+            assert len(result) == 1
+            batch_size = 1
+            result = result[0][0]
+            img_metas = data['img_metas'][0].data[0][0]
+            filepath = img_metas['ori_filename']
+
+            if args.save_preds:
+                out_dir = os.path.join(output_folder, 'results')
+                if not os.path.exists(out_dir):
+                    os.makedirs(out_dir)
+                out_file = os.path.join(out_dir, filepath.replace('jpg', 'txt'))
+                boxes = result
+                with open(out_file, 'w') as f:
+                    for b in range(boxes.shape[0]):
+                        box = boxes[b]
+                        f.write("%.5f %.5f %.5f %.5f %g\n"%(box[0], box[1], box[2]-box[0], box[3]-box[1], box[4]))
+
+            for _ in range(batch_size):
+                prog_bar.update()
 
 
 if __name__ == '__main__':
